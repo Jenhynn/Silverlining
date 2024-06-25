@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  web:
+    build:
+      context: .
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+      - "5678:5678" # 디버깅 포트
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgres://admin:admin1234@db:5432/database
+      - ENVIRONMENT=development
+    command: >
+      sh -c "if [ ! -f /app/.initialized ]; then
+              python manage.py migrate --noinput &&
+              python manage.py compilemessages &&
+              touch /app/.initialized;
+            fi;
+            if [ \"$ENVIRONMENT\" = 'development' ]; then
+              python -m debugpy --listen 0.0.0.0:5678 manage.py runserver 0.0.0.0:8000;
+            else
+              python manage.py runserver 0.0.0.0:8000;
+            fi"
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin1234
+  redis:
+    image: redis:6
