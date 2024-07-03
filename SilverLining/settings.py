@@ -165,8 +165,8 @@ LANGUAGES = [
 STATIC_URL = '/static/'
 
 # DEPLOYMENT
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = BASE_DIR / 'staticfiles' # 개발 환경에서의 static 경로와 겹치지 않아야 함
 
 # DEVELOPMENT
 STATICFILES_DIRS = [BASE_DIR / "static"] 
